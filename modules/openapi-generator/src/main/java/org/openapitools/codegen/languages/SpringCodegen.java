@@ -49,6 +49,7 @@ public class SpringCodegen extends AbstractJavaCodegen
 
     public static final String TITLE = "title";
     public static final String SERVER_PORT = "serverPort";
+    public static final String SERVER_PORT1 = "serverPort1";
     public static final String CONFIG_PACKAGE = "configPackage";
     public static final String BASE_PACKAGE = "basePackage";
     public static final String INTERFACE_ONLY = "interfaceOnly";
@@ -76,8 +77,10 @@ public class SpringCodegen extends AbstractJavaCodegen
     public static final String CLOSE_BRACE = "}";
 
     protected String title = "OpenAPI Spring";
-    protected String configPackage = "org.openapitools.configuration";
-    protected String basePackage = "org.openapitools";
+//    protected String configPackage = "org.openapitools.configuration";
+//    protected String basePackage = "org.openapitools";
+    protected String configPackage = AbstractJavaCodegen.groupId1+".configuration";
+    protected String basePackage =AbstractJavaCodegen.groupId1;
     protected boolean interfaceOnly = false;
     protected boolean delegatePattern = false;
     protected boolean delegateMethod = false;
@@ -98,7 +101,8 @@ public class SpringCodegen extends AbstractJavaCodegen
     protected boolean hateoas = false;
     protected boolean returnSuccessCode = false;
     protected boolean unhandledException = false;
-
+    public static final String LOG4J = "log4j";
+    public static final String DOCKER = "docker";
     public SpringCodegen() {
         super();
 
@@ -131,10 +135,11 @@ public class SpringCodegen extends AbstractJavaCodegen
 
         outputFolder = "generated-code/javaSpring";
         embeddedTemplateDir = templateDir = "JavaSpring";
-        apiPackage = "org.openapitools.api";
-        modelPackage = "org.openapitools.model";
-        invokerPackage = "org.openapitools.api";
-        artifactId = "openapi-spring";
+        apiPackage = basePackage+".api";
+        modelPackage = basePackage+".model";
+        invokerPackage = basePackage+".api";
+        //artifactId = "openapi-spring-tushar";
+        artifactId =AbstractJavaCodegen.projectName;
 
         // clioOptions default redefinition need to be updated
         updateOption(CodegenConstants.INVOKER_PACKAGE, this.getInvokerPackage());
@@ -203,7 +208,7 @@ public class SpringCodegen extends AbstractJavaCodegen
     public String getHelp() {
         return "Generates a Java SpringBoot Server application using the SpringFox integration.";
     }
-
+    
     @Override
     public void processOpts() {
 
@@ -334,6 +339,12 @@ public class SpringCodegen extends AbstractJavaCodegen
         if (additionalProperties.containsKey(UNHANDLED_EXCEPTION_HANDLING)) {
             this.setUnhandledException(Boolean.valueOf(additionalProperties.get(UNHANDLED_EXCEPTION_HANDLING).toString()));
         }
+        if (additionalProperties.containsKey(CodegenConstants.LOG4J)) {
+            this.setLog4j(Boolean.valueOf(CodegenConstants.LOG4J));
+        }
+        if (additionalProperties.containsKey(CodegenConstants.DOCKER)) {
+            this.setDocker(Boolean.valueOf(CodegenConstants.DOCKER));
+        }
         additionalProperties.put(UNHANDLED_EXCEPTION_HANDLING, this.isUnhandledException());
 
         typeMapping.put("file", "org.springframework.core.io.Resource");
@@ -356,6 +367,12 @@ public class SpringCodegen extends AbstractJavaCodegen
 
         supportingFiles.add(new SupportingFile("pom.mustache", "", "pom.xml"));
         supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
+        if(CodegenConstants.DOCKER) {
+        	supportingFiles.add(new SupportingFile("Dockerfile.mustache", "", "Dockerfile"));
+        	supportingFiles.add(new SupportingFile("DockerBuild.mustache", "", "DockerBuild.bat"));
+        	supportingFiles.add(new SupportingFile("DockerRun.mustache", "", "DockerRun.bat"));
+        	
+        }
 
         if (!this.interfaceOnly) {
             if (library.equals(SPRING_BOOT)) {
@@ -388,6 +405,10 @@ public class SpringCodegen extends AbstractJavaCodegen
                 apiTemplateFiles.put("apiController.mustache", "Controller.java");
                 supportingFiles.add(new SupportingFile("application.mustache",
                         ("src.main.resources").replace(".", java.io.File.separator), "application.properties"));
+                if(CodegenConstants.LOG4J) {
+                supportingFiles.add(new SupportingFile("log4j.mustache",
+                        ("src.main.resources").replace(".", java.io.File.separator), "log4j.properties"));
+                }
                 supportingFiles.add(new SupportingFile("homeController.mustache",
                         (sourceFolder + File.separator + configPackage).replace(".", java.io.File.separator), "HomeController.java"));
                 if (!this.reactive && !this.apiFirst) {
@@ -551,6 +572,7 @@ public class SpringCodegen extends AbstractJavaCodegen
         if(!additionalProperties.containsKey(SERVER_PORT)) {
             URL url = URLPathUtils.getServerURL(openAPI, serverVariableOverrides());
             this.additionalProperties.put(SERVER_PORT, URLPathUtils.getPort(url, 8080));
+            this.additionalProperties.put(SERVER_PORT1, URLPathUtils.getPort(url, 9090));
         }
 
         if (openAPI.getPaths() != null) {

@@ -27,7 +27,9 @@ import org.openapitools.codegen.CliOption;
 import org.openapitools.codegen.ClientOptInput;
 import org.openapitools.codegen.CodegenConfig;
 import org.openapitools.codegen.CodegenConfigLoader;
+import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.DefaultGenerator;
+import org.openapitools.codegen.languages.AbstractJavaCodegen;
 import org.openapitools.codegen.online.model.GeneratorInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +94,12 @@ public class Generator {
             node = null;
         }
         OpenAPI openapi;
-        ParseOptions parseOptions = new ParseOptions();
+        CodegenConstants.LOG4J=opts.getLog4j();
+        CodegenConstants.DOCKER=opts.isDockerFile();
+        AbstractJavaCodegen.projectName=opts.getNameOfProject();
+        AbstractJavaCodegen.groupId1=opts.getGroupId();
+        //AbstractJavaCodegen.projectName=opts.getNameOfProject();
+         ParseOptions parseOptions = new ParseOptions();
         parseOptions.setResolve(true);
         if (node == null) {
             if (opts.getOpenAPIUrl() != null) {

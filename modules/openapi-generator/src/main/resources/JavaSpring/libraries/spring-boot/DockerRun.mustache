@@ -1,0 +1,4 @@
+@echo %cd%
+@cd /D %~dp0
+@echo %cd%
+docker build -f Dockerfile -t {{artifactId}}:latest .

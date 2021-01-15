@@ -50,6 +50,9 @@ import java.util.concurrent.Callable;
 <%={{ }}=%>
 {{#operations}}
 public class {{classname}}Controller implements {{classname}} {
+{{#log4j}}
+static Logger log = Logger.getLogger({{classname}}Controller.class.getName());
+{{/log4j}}
 {{#isDelegate}}
 
     private final {{classname}}Delegate delegate;

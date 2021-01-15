@@ -71,7 +71,8 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
     protected boolean java8Mode = true;
     protected boolean withXml = false;
     protected String invokerPackage = "org.openapitools";
-    protected String groupId = "org.openapitools";
+    //protected String groupId = "org.openapitools";
+    public static String groupId = "";
     protected String artifactId = "openapi-java";
     protected String artifactVersion = null;
     protected String artifactUrl = "https://github.com/openapitools/openapi-generator";
@@ -107,8 +108,27 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
     protected boolean parentOverridden = false;
     protected List<String> additionalModelTypeAnnotations = new LinkedList<>();
     protected boolean openApiNullable = true;
+    public boolean isDocker() {
+		return docker;
+	}
 
-    public AbstractJavaCodegen() {
+	public void setDocker(boolean docker) {
+		this.docker = docker;
+	}
+
+	protected boolean log4j=false;
+    protected boolean docker=false;
+    public static String projectName="";
+    public static String groupId1="";
+    public boolean isLog4j() {
+		return log4j;
+	}
+
+	public void setLog4j(boolean log4j) {
+		this.log4j = log4j;
+	}
+
+	public AbstractJavaCodegen() {
         super();
 
         modifyFeatureSet(features -> features
@@ -324,7 +344,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
             this.setGroupId((String) additionalProperties.get(CodegenConstants.GROUP_ID));
         } else {
             //not set, use to be passed to template
-            additionalProperties.put(CodegenConstants.GROUP_ID, groupId);
+            additionalProperties.put(CodegenConstants.GROUP_ID, AbstractJavaCodegen.groupId1);
         }
 
         if (additionalProperties.containsKey(CodegenConstants.ARTIFACT_ID)) {
@@ -464,11 +484,13 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
         if (!StringUtils.isEmpty(parentGroupId) && !StringUtils.isEmpty(parentArtifactId) && !StringUtils.isEmpty(parentVersion)) {
             additionalProperties.put("parentOverridden", true);
         }
-
+        if (additionalProperties.containsKey(CodegenConstants.LOG4J)) {
+            this.setLog4j(CodegenConstants.LOG4J);
+        }
         // make api and model doc path available in mustache template
         additionalProperties.put("apiDocPath", apiDocPath);
         additionalProperties.put("modelDocPath", modelDocPath);
-
+        additionalProperties.put("log4j",CodegenConstants.LOG4J);
         importMapping.put("List", "java.util.List");
         importMapping.put("Set", "java.util.Set");
 

@@ -28,8 +28,56 @@ public class GeneratorInput {
     private Map<String, String> options;
     private String openAPIUrl;
     private AuthorizationValue authorizationValue;
+    private boolean log4j;
+    private String groupId;
+    private String artifactId;
+    private String nameOfProject;
+    
 
-    public AuthorizationValue getAuthorizationValue() {
+	public String getNameOfProject() {
+		return nameOfProject;
+	}
+
+	public void setNameOfProject(String nameOfProject) {
+		this.nameOfProject = nameOfProject;
+	}
+
+	private boolean dockerFile;
+    
+
+	public boolean isDockerFile() {
+		return dockerFile;
+	}
+
+	public void setDockerFile(boolean dockerFile) {
+		this.dockerFile = dockerFile;
+	}
+
+	public boolean getLog4j() {
+		return log4j;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getArtifactId() {
+		return artifactId;
+	}
+
+	public void setArtifactId(String artifactId) {
+		this.artifactId = artifactId;
+	}
+
+	public void setLog4j(boolean log4j) {
+		this.log4j = log4j;
+	}
+
+	public AuthorizationValue getAuthorizationValue() {
         return authorizationValue;
     }
 

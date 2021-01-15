@@ -148,7 +148,11 @@ public class DefaultCodegen implements CodegenConfig {
     protected Set<String> reservedWords = new HashSet<String>();
     protected Set<String> languageSpecificPrimitives = new HashSet<String>();
     protected Map<String, String> importMapping = new HashMap<String, String>();
-    protected String modelPackage = "", apiPackage = "", fileSuffix;
+    protected static String modelPackage = "";
+
+	protected static String apiPackage = "";
+
+	protected String fileSuffix;
     protected String modelNamePrefix = "", modelNameSuffix = "";
     protected String apiNamePrefix = "", apiNameSuffix = "Api";
     protected String testPackage = "";
@@ -345,6 +349,9 @@ public class DefaultCodegen implements CodegenConfig {
         if (additionalProperties.containsKey(CodegenConstants.DISALLOW_ADDITIONAL_PROPERTIES_IF_NOT_PRESENT)) {
             this.setDisallowAdditionalPropertiesIfNotPresent(Boolean.valueOf(additionalProperties
                     .get(CodegenConstants.DISALLOW_ADDITIONAL_PROPERTIES_IF_NOT_PRESENT).toString()));
+        }
+        if (additionalProperties.containsKey(CodegenConstants.LOG4J)) {
+            this.setTemplateDir((String) additionalProperties.get(CodegenConstants.LOG4J));
         }
     }
 
